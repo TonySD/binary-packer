@@ -6,4 +6,10 @@ edition = "2024"
 [dependencies]
 clap = { version="4.5.38", features=["derive"] }
 libc = "0.2.172"
+rand = "0.9.1"
 tempfile = "3.20.0"
+windows-sys = { version = "0.59.0", features = ["Win32_System_Registry", "Win32_System_Threading", "Win32_UI", "Win32_UI_Shell"] }
+
+[profile.release]
+opt-level = "z" 
+strip = "symbols"

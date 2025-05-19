@@ -1,2 +1,4 @@
 /target
 src/generated_assets.rs
+assets/**
+!assets/.gitkeep
