@@ -30,7 +30,7 @@ fn main() {
     let config = configuration::Cli::parse();
 
     println!("Unpacking program...");
-    let unpacked_program = match unpack_program(files) {
+    let unpacked_program = match unpack_program(files, config.only_unpackage || only_unpacking) {
         Ok(unpacked_program) => unpacked_program,
         Err(e) => {
             println!("Error unpacking program: {}", e);
@@ -57,7 +57,7 @@ struct UnpackedProgram {
     temp_dir_path: std::path::PathBuf,
 }
 
-fn unpack_program(files: HashMap<&'static str, &'static [u8]>) -> Result<UnpackedProgram, io::Error> {
+fn unpack_program(files: HashMap<&'static str, &'static [u8]>, only_unpacking: bool) -> Result<UnpackedProgram, io::Error> {
     let random_name = format!("{:x}", rand::random::<u64>());
     let temp_dir = std::env::temp_dir().join(random_name);
     std::fs::create_dir(&temp_dir)?;
@@ -92,7 +92,7 @@ fn unpack_program(files: HashMap<&'static str, &'static [u8]>) -> Result<Unpacke
 
     if executable_counter == 0 {
         return Err(io::Error::new(io::ErrorKind::NotFound, "No executable file found"));
-    } else if executable_counter > 1 && !master_found {
+    } else if executable_counter > 1 && !master_found && !only_unpacking {
         return Err(io::Error::new(io::ErrorKind::NotFound, "Only one executable file is allowed. Name the executable file with prefix 'master', or use the --only-unpack flag"));
     } 
 
