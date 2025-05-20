@@ -117,13 +117,13 @@ fn run_program(program: &UnpackedProgram, args: &[String], config: &configuratio
     
     let mut child = Command::new(program.executable_path.clone())
         .args(args)
-        .stdout(if config.output_file.is_some() {Stdio::piped()} else {Stdio::inherit()})
+        .stdout(if config.binary_stdout_file.is_some() {Stdio::piped()} else {Stdio::inherit()})
         .current_dir(&report_dir)
         .spawn()?;
 
-    if config.output_file.is_some() && child.stdout.is_some() {
+    if config.binary_stdout_file.is_some() && child.stdout.is_some() {
         let stdout = child.stdout.take().unwrap();
-        let output_file = File::create(&report_dir.join(config.output_file.clone().unwrap()))?;
+        let output_file = File::create(&report_dir.join(config.binary_stdout_file.clone().unwrap()))?;
         let mut output_writer = BufWriter::new(output_file);
         let mut reader = BufReader::new(stdout);
 
