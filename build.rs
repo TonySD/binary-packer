@@ -7,11 +7,7 @@ fn main() {
     let mut file = File::create(&dest_path).unwrap();
 
     let asset_dir = "assets";
-    writeln!(file, "const EXECUTABLE_SUFFIX: &str = if cfg!(target_os = \"windows\") {{").unwrap();
-    writeln!(file, "    \"exe\"").unwrap();
-    writeln!(file, "}} else {{").unwrap();
-    writeln!(file, "    \"elf\"").unwrap();
-    writeln!(file, "}};").unwrap();
+
     writeln!(file, "pub fn get_embedded_files() -> HashMap<&'static str, &'static [u8]> {{").unwrap();
     writeln!(file, "    let mut map = std::collections::HashMap::new();").unwrap();
 

@@ -13,3 +13,7 @@ windows-sys = { version = "0.59.0", features = ["Win32_System_Registry", "Win32_
 [profile.release]
 opt-level = "z" 
 strip = "symbols"
+
+[features]
+default = []
+only_unpacking = []
