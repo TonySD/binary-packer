@@ -29,12 +29,12 @@ All your files will be unpacked to temporary folder
 Loader have its own arguments. To access it, just pass it to command line. \
 For passing arguments to loaded binary/script, pass args after `--`:
 ```bash
-plugin --loader-arg -- --loaded-binary-arg
+loader.exe --loader-arg -- --loaded-binary-arg
 ```
 
 ### Only unpack files via CLI flags (even if builded without feature)
 ```bash
-plugin --only-unpackage
+loader.exe --only-unpack
 ```
 
 ### Encrypting reports
@@ -43,5 +43,5 @@ To do this, you have to pass `--encrypt-report` flag. After that, loaded binary 
 If you want to capture output, pass the flag `--output-file`. Don't use absolute path here! Just name the file, it will be placed in %TEMPDIR%/report directory also. \
 So the full command will be:
 ```bash
-loader --output-file binary_stdout.txt --encrypt-report password -- --mode All
+loader.exe --output-file binary_stdout.txt --encrypt-report password -- --mode All
 ```

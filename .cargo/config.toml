@@ -8,4 +8,4 @@ rustflags = ["-C", "target-feature=+crt-static"]
 rustflags = ["-C", "target-feature=+crt-static"]
 
 [build]
-target = "i686-unknown-linux-musl" 
+target = "x86_64-pc-windows-msvc" 

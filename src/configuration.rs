@@ -5,7 +5,7 @@ pub struct Cli {
     #[arg(short = 's', long="stdout-file", help = "Output file for stdout of program")]
     pub binary_stdout_file: Option<String>,
 
-    #[arg(short = 'u', long, help = "Only unpackage the input files, don't execute anything and don't delete temporary folder", default_value_t = false)]
+    #[arg(short = 'u', long = "only-unpack", help = "Only unpack the input files, don't execute anything and don't delete temporary folder", default_value_t = false)]
     pub only_unpackage: bool,
 
     #[arg(short = 'e', long, help = "Specify the key. Loaded binary will be launched from %TEMPDIR%, and you need to specify for loaded program the output directory ./report. After launch this directory will be archived and encrypted.")]

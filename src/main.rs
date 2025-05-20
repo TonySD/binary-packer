@@ -39,7 +39,7 @@ fn main() {
 
     // Just exit, if we need to only unpack the files
     if config.only_unpackage || only_unpacking {
-        println!("Mode: only unpacking, temp dir was not deleted");
+        println!("Mode only-unpack, temp dir was not deleted");
         return;
     }
 
@@ -91,8 +91,10 @@ fn unpack_program(files: HashMap<&'static str, &'static [u8]>, only_unpacking: b
     }
 
     if executable_counter == 0 {
+        clean_temp_dir(&temp_dir)?;
         return Err(io::Error::new(io::ErrorKind::NotFound, "No executable file found"));
     } else if executable_counter > 1 && !master_found && !only_unpacking {
+        clean_temp_dir(&temp_dir)?;
         return Err(io::Error::new(io::ErrorKind::NotFound, "Only one executable file is allowed. Name the executable file with prefix 'master', or use the --only-unpack flag"));
     } 
 
@@ -114,7 +116,7 @@ fn run_program(program: &UnpackedProgram, args: &[String], config: &configuratio
         None => Path::new(".").to_path_buf()
     };
 
-    
+    println!("Running program: {}", program.executable_path);
     let mut child = Command::new(program.executable_path.clone())
         .args(args)
         .stdout(if config.binary_stdout_file.is_some() {Stdio::piped()} else {Stdio::inherit()})
@@ -143,8 +145,7 @@ fn run_program(program: &UnpackedProgram, args: &[String], config: &configuratio
         )?;
     }
 
-    std::fs::remove_dir_all(&program.temp_dir_path)?;
-    println!("Temp dir removed: {}", program.temp_dir_path.display());
+    clean_temp_dir(&program.temp_dir_path)?;
 
     Ok(())
 }
@@ -179,5 +180,11 @@ fn archive_dir(src_dir: &Path, dst_file: &Path, password: &str) -> Result<(), io
     }
 
     zip.finish()?;
+    Ok(())
+}
+
+fn clean_temp_dir(temp_dir: &Path) -> Result<(), io::Error> {
+    std::fs::remove_dir_all(temp_dir)?;
+    println!("Temp dir removed: {}", temp_dir.display());
     Ok(())
 }
