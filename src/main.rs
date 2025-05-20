@@ -26,7 +26,7 @@ fn main() {
     #[cfg(not(feature = "only_unpacking"))]
     let only_unpacking = false;
 
-    let files: HashMap<&'static str, &'static [u8]> = get_embedded_files();
+    let files: HashMap<&'static str, Vec<u8>> = get_embedded_files();
     let config = configuration::Cli::parse();
 
     println!("Unpacking program...");
@@ -39,7 +39,7 @@ fn main() {
 
     // Just exit, if we need to only unpack the files
     if config.only_unpackage || only_unpacking {
-        println!("Mode only-unpack, temp dir was not deleted");
+        println!("Mode only-unpack, temp dir was not deleted: {}", unpacked_program.temp_dir_path.display());
         return;
     }
 
@@ -57,7 +57,7 @@ struct UnpackedProgram {
     temp_dir_path: std::path::PathBuf,
 }
 
-fn unpack_program(files: HashMap<&'static str, &'static [u8]>, only_unpacking: bool) -> Result<UnpackedProgram, io::Error> {
+fn unpack_program(files: HashMap<&'static str, Vec<u8>>, only_unpacking: bool) -> Result<UnpackedProgram, io::Error> {
     let random_name = format!("{:x}", rand::random::<u64>());
     let temp_dir = std::env::temp_dir().join(random_name);
     std::fs::create_dir(&temp_dir)?;
@@ -73,6 +73,11 @@ fn unpack_program(files: HashMap<&'static str, &'static [u8]>, only_unpacking: b
     for (filename, content) in &files {
         println!("Unpacking file: {}", filename);
         let file_path = temp_dir.join(filename);
+
+        if let Some(parent) = file_path.parent() {
+            std::fs::create_dir_all(parent)?;
+        }
+
         std::fs::write(&file_path, content)?;
         
         // Make executable files executable
@@ -90,10 +95,12 @@ fn unpack_program(files: HashMap<&'static str, &'static [u8]>, only_unpacking: b
         }
     }
 
-    if executable_counter == 0 {
+    if master_found || only_unpacking {
+        // Nothing to do
+    } else if executable_counter == 0 {
         clean_temp_dir(&temp_dir)?;
         return Err(io::Error::new(io::ErrorKind::NotFound, "No executable file found"));
-    } else if executable_counter > 1 && !master_found && !only_unpacking {
+    } else if executable_counter > 1 {
         clean_temp_dir(&temp_dir)?;
         return Err(io::Error::new(io::ErrorKind::NotFound, "Only one executable file is allowed. Name the executable file with prefix 'master', or use the --only-unpack flag"));
     } 
