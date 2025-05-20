@@ -2,10 +2,10 @@
 ## Idea
 Universal single-file loader, that unpacks all files from assets/ dir to %TEMP% and launches executable file
 
-## Usage
+## Compilation
+### Embed files
 Add all files to assets dir and compile by cargo. Script build.rs while compilation will automatically detect all the files (except .gitkeep) and include it inside the binary.
 
-## Compilation
 ### Linux platform
 For compiling to linux, you have to change [this line](.cargo/config.toml#L8) to `target = "x86_64-unknown-linux-gnu"`
 
